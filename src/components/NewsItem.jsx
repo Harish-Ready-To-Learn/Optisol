@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   Image,
   StyleSheet,
@@ -6,22 +7,53 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import downloadImg from '../utils/downloadImage';
-const NewsItem = ({item}) => {
+import RNFetchBlob from 'rn-fetch-blob';
+
+const NewsItem = ({item, index}) => {
+  const [localImagePath, setLocalImagePath] = useState(null);
+
+  const {fs} = RNFetchBlob;
+  const imagePath = `${fs.dirs.PictureDir}/${item.source.name}_${index}.png`;
+  useEffect(() => {
+    checkAndDownloadImage();
+  }, []);
+  const checkAndDownloadImage = async () => {
+    const fileExists = await fs.exists(imagePath);
+    if (fileExists) {
+      console.log(`file://${imagePath}`);
+      setLocalImagePath(`file://${imagePath}`);
+    } else {
+      //   downloadImage();
+    }
+  };
   return (
     <View style={styles.container}>
       {item.urlToImage ? (
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
-            source={{uri: item.urlToImage}}
+            source={{uri: localImagePath ? localImagePath : item.urlToImage}}
             resizeMode="cover"
           />
           <TouchableOpacity
             style={styles.downloadButton}
-            onPress={() => {
-              downloadImg(item.urlToImage);
+            onPress={async () => {
+              if (localImagePath) {
+                Alert.alert(
+                  'Download',
+                  `Image already downloaded and saved to gallery! in the path ${localImagePath}`,
+                );
+              } else {
+                let imagePath = `${fs.dirs.PictureDir}/${item.source.name}_${index}.png`;
+                let imageDownloaded = await downloadImg(
+                  item.urlToImage,
+                  item.source.name,
+                  index,
+                );
+                if (imageDownloaded) setLocalImagePath(`file://${imagePath}`);
+              }
             }}>
             <Image
               source={require('../assets/download_icon.png')}

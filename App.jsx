@@ -49,7 +49,7 @@ const App = () => {
       <FlatList
         data={news}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => <NewsItem item={item} />}
+        renderItem={({item, index}) => <NewsItem item={item} index={index} />}
         onEndReached={loadMore} // Load more data when reaching the end
         onEndReachedThreshold={0.5}
         ListFooterComponent={
