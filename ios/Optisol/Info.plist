@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need photo library permission for saving images</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need permission to save photos to your library.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Optisol</string>
 	<key>CFBundleExecutable</key>
